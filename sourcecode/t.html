@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+    <title>Fishtank Dungeons</title>
+
+    <meta charset="utf-8">
+    <meta name="darkreader-lock"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="manifest" href='data:application/manifest+json,{"display":"standalone","orientation":"landscape"}'>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+
+    <link href="favicon.png" rel="shortcut icon">
+    <link href="favicon.png" rel="apple-touch-icon">
+    <link href="favicon.png" rel="apple-touch-icon-precomposed">
+    <meta property="og:image" content="favicon.png">
+    <meta property="twitter:image:src" content="favicon.png">
+    <meta name="image" content="favicon.png">
+    <meta itemprop="image" content="favicon.png">
+    <meta name="og:image" content="favicon.png">
+    
+    <meta itemprop="name" content="Premier Fishtank.live game in stunning 3D.">
+    <meta name="description" content="Premier Fishtank.live game in stunning 3D.">
+    <meta name="og:description" content="Premier Fishtank.live game in stunning 3D.">
+
+    <meta name="og:type" content="website">
+    <meta name="og:title" content="Fishtank Dungeons">
+
+    <meta name="theme-color" content="#281C3C">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+    canvas { border: 0px none; outline: none; background-color: black; }
+    * { margin:0; padding:0; }
+    html, body { width:100%; height:100%; overflow:hidden; background-color:#000; }
+    img{width:80%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+    audio{display:none;}
+    .intro
+    {
+        text-shadow: 0 0 0.75vh #000, 0 0 0.75vh #000, 0 0 0.75vh #CF0067, 0 0 0.75vh #CF0067, 0 0 1.5vh #CF0067, 0 0 1.5vh #B8005C, 0 0 1.5vh #B8005C;
+        font-family: "Silkscreen", sans-serif;
+        font-weight: 700;
+        font-size: 1.3vh;
+        font-style: normal;
+        user-select:none;
+        display:none;
+        z-index:9999;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        color:white;
+    }
+    .max
+    {
+        text-shadow: 0 0 0.75vh #000, 0 0 0.75vh #000, 0 0 0.75vh #CF0067, 0 0 0.75vh #CF0067, 0 0 1.5vh #CF0067, 0 0 1.5vh #B8005C, 0 0 1.5vh #B8005C;
+        user-select:none;
+        z-index:9999;
+        position:absolute;
+        top:3%;
+        left:97%;
+        transform:translate(-50%,-50%);
+        cursor:pointer;
+        display:none;
+    }
+	a:link {
+	  color: #ec4197;
+	  text-decoration: none;
+	}
+	a:visited {
+	  color: #ec4197;
+	  text-decoration: none;
+	}
+	a:hover {
+	  color: #ff7ebe;
+	  text-decoration: none;
+	}
+	a:active {
+	  color: #ec4197;
+	  text-decoration: none;
+	}
+    </style>
+
+</head>
+<body>
+    <div id="max" class="max" onclick="document.getElementById('canvas').requestFullscreen();" ontouchstart="document.getElementById('canvas').requestFullscreen();">🍆</div>
+    <div id="intro" class="intro" onclick="document.getElementById('canvas').focus();document.getElementById('canvas').requestPointerLock();">
+        <center><h1>Welcome to the Fishtank Dungeons</h1></center><br>
+        <p>Follow the floating eye to collect the fishtoys before the fish get you!! There are 14 fishtoys in total and the final fishtoy will have no floating eye to guide you, instead the sky will turn more red the closer you are to it!</p>
+        <br>
+        <h2>On Desktop</h2>
+        <ul>
+            <li><font color="#00FF00">ESCAPE</font>&nbsp;to release mouse lock.</li>
+            <li><font color="#00FF00">Mouse Move</font>&nbsp;to Look Around.</li>
+            <li><font color="#00FF00">Arrow Keys</font>&nbsp;or&nbsp;<font color="#00FF00">WASD</font>&nbsp;to Move Around.</li>
+        </ul>
+        <br>
+        <h2>On Mobile</h2>
+        <ul>
+            <li><font color="#00FF00">Left Touch &amp; Drag</font>&nbsp;to Move Around.</li>
+            <li><font color="#00FF00">Right Touch &amp; Drag</font>&nbsp;to Look Around.</li>
+            <li><font color="#00FF00">Left tap</font>&nbsp;bottom left of screen to shoot.</li>
+        </ul>
+        <br>
+        <h2>Credits</h2>
+        <ul>
+            <li>Made by&nbsp;<font color="#00FF00">an intergalactic prober</font>&nbsp;👽</li>
+            <li>Sounds by&nbsp;<font color="#00FF00">Rebore44</font>.</li>
+            <li>Zipp Can by&nbsp;<font color="#00FF00">|Vertical Bar|</font>.</li>
+            <li>Loading Screen by&nbsp;<font color="#00FF00">Jan Talcum</font>.</li>
+            <li>Credits music by&nbsp;<font color="#00FF00">Ewaly Neno</font>.</li>
+            <li>Angel investor:&nbsp;<font color="#00FF00">Doge</font>&nbsp;🥸</li>
+        <ul>
+    </div>
+    <img id="ciaload" src="load.png"/>
+    <audio loop id=a><source src="ambient.mp3" type="audio/ogg"></audio>
+    <canvas id="canvas" onclick="this.focus();tryRequestPointerLock(this);" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    <script type='text/javascript'>
+        var Module = {canvas: document.getElementById('canvas')};
+        function tryRequestPointerLock(element)
+		{
+			const requestPointerLock = element.requestPointerLock || element.webkitRequestPointerLock;
+			if('pointerLockElement' in document || 'webkitPointerLockElement' in document){if(requestPointerLock){requestPointerLock.call(element);}}
+		}
+        function pA(snd)
+        {
+            var aud = new Audio(snd);
+            aud.preload = "auto";
+        }
+        pA('shot.mp3');
+        pA('d1.mp3');
+        pA('d2.mp3');
+        pA('d3.mp3');
+        pA('d4.mp3');
+        pA('d5.mp3');
+        pA('d6.mp3');
+        pA('p1.mp3');
+        pA('p2.mp3');
+        pA('p3.mp3');
+        pA('p4.mp3');
+        pA('p5.mp3');
+        pA('p6.mp3');
+        pA('p7.mp3');
+        pA('p8.mp3');
+    </script>
+    {{{ SCRIPT }}}
+</body>
+</html>
