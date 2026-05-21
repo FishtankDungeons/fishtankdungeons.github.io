@@ -103,7 +103,7 @@ const char appTitle[]="Fishtank Dungeons";
 SDL_Window* wnd;
 SDL_GLContext glc;
 SDL_Surface* s_icon = NULL;
-uint winw=1024, winh=768, ks[4]={0};
+uint winw=1024, winh=768, ks[6]={0};
 float t=0.f, dt=0.f, lt=0.f, fc=0.f, lfct=0.f, aspect, ww, wh, rww, rwh;
 float tsx=0, tsy=0, tdx=0, tdy=0;
 
@@ -472,11 +472,11 @@ void main_loop()
                 {
                     tsx = event.tfinger.x;
                     tsy = event.tfinger.y;
-                    if(ga == 0.f && event.tfinger.y > 0.87f) //shoot
-                    {
-                        gun = 1;
-                        doAttack();
-                    }
+                }
+                if(ga == 0.f && event.tfinger.y > 0.87f) //shoot
+                {
+                    gun = 1;
+                    doAttack();
                 }
             }
             break;
@@ -507,11 +507,25 @@ void main_loop()
             {
                 if(NOINPUT){return;}
                 const SDL_Keycode key = event.key.keysym.sym;
+                const SDL_Keycode scan = event.key.keysym.scancode;
 
-                if(     key == SDLK_LEFT  || key == SDLK_a){ks[0]=1;}
-                else if(key == SDLK_RIGHT || key == SDLK_d){ks[1]=1;}
-                else if(key == SDLK_UP    || key == SDLK_w){ks[2]=1;}
-                else if(key == SDLK_DOWN  || key == SDLK_s){ks[3]=1;}
+                if(     key == SDLK_LEFT  || key == SDLK_a || scan == SDL_SCANCODE_A){ks[0]=1;}
+                else if(key == SDLK_RIGHT || key == SDLK_d || scan == SDL_SCANCODE_D){ks[1]=1;}
+                else if(key == SDLK_UP    || key == SDLK_w || scan == SDL_SCANCODE_W){ks[2]=1;}
+                else if(key == SDLK_DOWN  || key == SDLK_s || scan == SDL_SCANCODE_S){ks[3]=1;}
+                else if(key == SDLK_j     || scan == SDL_SCANCODE_J)                 {ks[4]=1;}
+                else if(key == SDLK_l     || scan == SDL_SCANCODE_L)                 {ks[5]=1;}
+                else if((key == SDLK_SPACE || scan == SDL_SCANCODE_I) && caught == 0.f && ga == 0.f){doAttack();}
+                else if(key == SDLK_1){sens = 0.0001f;}
+                else if(key == SDLK_2){sens = 0.0003f;}
+                else if(key == SDLK_3){sens = 0.0006f;}
+                else if(key == SDLK_4){sens = 0.0012f;}
+                else if(key == SDLK_5){sens = 0.0022f;}
+                else if(key == SDLK_6){sens = 0.006f;}
+                else if(key == SDLK_7){sens = 0.012f;}
+                else if(key == SDLK_8){sens = 0.03f;}
+                else if(key == SDLK_9){sens = 0.06f;}
+                else if(key == SDLK_0){sens = 0.003f;}
                 else if(key == SDLK_f) // show average fps
                 {
                     if(t-lfct > 2.0)
@@ -539,11 +553,14 @@ void main_loop()
             {
                 if(NOINPUT){return;}
                 const SDL_Keycode key = event.key.keysym.sym;
+                const SDL_Keycode scan = event.key.keysym.scancode;
 
-                if(     key == SDLK_LEFT  || key == SDLK_a){ks[0]=0;}
-                else if(key == SDLK_RIGHT || key == SDLK_d){ks[1]=0;}
-                else if(key == SDLK_UP    || key == SDLK_w){ks[2]=0;}
-                else if(key == SDLK_DOWN  || key == SDLK_s){ks[3]=0;}
+                if(     key == SDLK_LEFT  || key == SDLK_a)         {ks[0]=0;}
+                else if(key == SDLK_RIGHT || key == SDLK_d)         {ks[1]=0;}
+                else if(key == SDLK_UP    || key == SDLK_w)         {ks[2]=0;}
+                else if(key == SDLK_DOWN  || key == SDLK_s)         {ks[3]=0;}
+                else if(key == SDLK_j     || scan == SDL_SCANCODE_J){ks[4]=0;}
+                else if(key == SDLK_l     || scan == SDL_SCANCODE_L){ks[5]=0;}
             }
             break;
 
@@ -616,8 +633,13 @@ if(winner == 0)
             // shoot
             if(ga == 0.f && (SDL_JoystickGetAxis(js, 2) > 0 || SDL_JoystickGetAxis(js, 5) > 0))
             {
-                gun = 1;
-                doAttack();
+                static float nt = 0.f;
+                if(t > nt)
+                {
+                    gun = 1;
+                    doAttack();
+                    nt = t+0.2f;
+                }
             }
 #endif
 
@@ -634,8 +656,13 @@ if(winner == 0)
 #ifdef WEB
             else if(ga == 0.f && SDL_JoystickGetButton(js, 0) == 1) // shoot
             {
-                gun = 1;
-                doAttack();
+                static float nt = 0.f;
+                if(t > nt)
+                {
+                    gun = 1;
+                    doAttack();
+                    nt = t+0.2f;
+                }
             }
 #endif
         }
@@ -680,6 +707,8 @@ if(winner == 0)
         else if(ks[1]==1){px += lookx.x * STRAFE_SPEED * dt, py += lookx.y * STRAFE_SPEED * dt; fms=STRAFE_SPEED;} // D
         /**/ if(ks[2]==1){px -= lookz.x * fms * dt, py -= lookz.y * fms * dt;} // W
         else if(ks[3]==1){px += lookz.x * fms * dt, py += lookz.y * fms * dt;} // S
+        /**/ if(ks[4]==1){xrot += 3.f*dt;}
+        else if(ks[5]==1){xrot -= 3.f*dt;}
     }
 
     // camera
@@ -1186,11 +1215,14 @@ int main(int argc, char** argv)
     printf("One command line argument, msaa 0-16.\n");
     printf("e.g; ./fishtankdungeons 16\n");
     printf("----\n");
+    msaa = 0;
 #endif
     printf("ESCAPE to release mouse lock.\n");
-    printf("Mouse Move to Look Around.\n");
+    printf("Mouse Move to Look Around (or J,L).\n");
     printf("Arrow Keys or WASD to Move Around.\n");
-    printf("Press the G key if you've had enough.\n");
+    printf("Space or I to Shoot.\n");
+    printf("1-9 to change mouse sensitivity or 0 to reset it.\n");
+    printf("G toggles the visibility of the gun.\n");
     printf("----\n");
     printf("F = FPS to console.\n");
     printf("R = Reset game.\n");
