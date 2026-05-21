@@ -182,16 +182,10 @@ void esRebind(const GLenum target, GLuint* buffer, const void* data, const GLsiz
     {
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
         glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(position_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].nid);
         glVertexAttribPointer(normal_id, 3, GL_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(normal_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
         glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(color_id);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
         esBoundModel = id;
     }
@@ -199,12 +193,8 @@ void esRebind(const GLenum target, GLuint* buffer, const void* data, const GLsiz
     {
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
         glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(position_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
         glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(color_id);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
         esBoundModel = id;
     }
@@ -217,32 +207,20 @@ void esRebind(const GLenum target, GLuint* buffer, const void* data, const GLsiz
     {
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
         glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(position_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].nid);
         glVertexAttribPointer(normal_id, 3, GL_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(normal_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
         glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(color_id);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
-
         glDrawElements(GL_TRIANGLES, esModelArray[id].ni, esModelArray[id].itp, 0);
     }
     void esBindRenderF(const uint id) // for Fullbright
     {
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
         glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(position_id);
-
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
         glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-        glEnableVertexAttribArray(color_id);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
-
         glDrawElements(GL_TRIANGLES, esModelArray[id].ni, esModelArray[id].itp, 0);
     }
 #endif
@@ -564,7 +542,7 @@ void makeLambert()
     shdLambert_projection = glGetUniformLocation(shdLambert, "projection");
     shdLambert_modelview  = glGetUniformLocation(shdLambert, "modelview");
     shdLambert_lightpos   = glGetUniformLocation(shdLambert, "lightpos");
-    shdLambert_ambient    = glGetUniformLocation(shdLambert, "ambient");\
+    shdLambert_ambient    = glGetUniformLocation(shdLambert, "ambient");
     shdLambert_saturate   = glGetUniformLocation(shdLambert, "saturate");
     shdLambert_opacity    = glGetUniformLocation(shdLambert, "opacity");
 }
@@ -586,6 +564,7 @@ void shadeFullbrightSolid(GLint* position, GLint* iprojection, GLint* imodelview
     *opacity = shdFullbrightSolid_opacity;
     *lightness = shdFullbrightSolid_lightness;
     glUseProgram(shdFullbrightSolid);
+    glEnableVertexAttribArray(position_id);
 }
 void shadeFullbright(GLint* position, GLint* iprojection, GLint* imodelview, GLint* color, GLint* lightness, GLint* opacity)
 {
@@ -596,6 +575,8 @@ void shadeFullbright(GLint* position, GLint* iprojection, GLint* imodelview, GLi
     *opacity = shdFullbright_opacity;
     *lightness = shdFullbright_lightness;
     glUseProgram(shdFullbright);
+    glEnableVertexAttribArray(position_id);
+    glEnableVertexAttribArray(color_id);
 }
 void shadeLambertSolid(GLint* position, GLint* iprojection, GLint* imodelview, GLint* lightpos, GLint* normal, GLint* color, GLint* ambient, GLint* saturate, GLint* opacity)
 {
@@ -609,6 +590,8 @@ void shadeLambertSolid(GLint* position, GLint* iprojection, GLint* imodelview, G
     *saturate = shdLambertSolid_saturate;
     *opacity = shdLambertSolid_opacity;
     glUseProgram(shdLambertSolid);
+    glEnableVertexAttribArray(position_id);
+    glEnableVertexAttribArray(normal_id);
 }
 void shadeLambert(GLint* position, GLint* iprojection, GLint* imodelview, GLint* lightpos, GLint* normal, GLint* color, GLint* ambient, GLint* saturate, GLint* opacity)
 {
@@ -622,6 +605,9 @@ void shadeLambert(GLint* position, GLint* iprojection, GLint* imodelview, GLint*
     *saturate = shdLambert_saturate;
     *opacity = shdLambert_opacity;
     glUseProgram(shdLambert);
+    glEnableVertexAttribArray(position_id);
+    glEnableVertexAttribArray(normal_id);
+    glEnableVertexAttribArray(color_id);
 }
 
 #include <math.h>   // sqrtf logf fabsf cosf sinf
