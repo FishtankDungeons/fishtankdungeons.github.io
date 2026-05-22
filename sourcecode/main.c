@@ -165,7 +165,7 @@ float cns[MAX_FISH]; // last sound time
 void rndAudio(const char* prefix, const uint range_max, const float volume)
 {
     char tmp[256];
-    sprintf(tmp, "var audio = new Audio('%s%u.mp3');audio.volume=%g;audio.play();", prefix, esRand(1, range_max), volume);
+    sprintf(tmp, "playSound('%s%u.mp3', %g);", prefix, esRand(1, range_max), volume);
     emscripten_run_script(tmp);
 }
 void rndFishSound(uint i, float v)
@@ -367,13 +367,13 @@ void doAttack()
 
     //printf("%i\n", sid);
 #ifdef WEB
-    emscripten_run_script("var audio = new Audio('shot.mp3');audio.play();"); // play sound
+    emscripten_run_script("playSound('shot.mp3');"); // play sound
 #endif
     if(sid != -1)
     {
 #ifdef WEB
         char tmp[256];
-        sprintf(tmp, "var audio = new Audio('d%u.mp3');audio.play();", esRand(1,6));
+        sprintf(tmp, "playSound('d%u.mp3');", esRand(1,6));
         emscripten_run_script(tmp); // play sound
 #endif
         cds[sid] = t; // start fish death animation
@@ -1023,7 +1023,7 @@ else
             if(pid != 27)
             {
                 char tmp[256];
-                sprintf(tmp, "var audio = new Audio('p%u.mp3');audio.play();", esRand(1,8));
+                sprintf(tmp, "playSound('p%u.mp3');", esRand(1,8));
                 emscripten_run_script(tmp); // play sound
             }
 #endif

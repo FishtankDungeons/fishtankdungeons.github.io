@@ -4,27 +4,31 @@
     <title>Fishtank Dungeons</title>
 
     <meta charset="utf-8">
-    <meta name="darkreader-lock"/>
+    <meta name="darkreader-lock">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="manifest" href='data:application/manifest+json,{"display":"standalone","orientation":"landscape"}'>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
 
-    <link href="favicon.png" rel="shortcut icon">
-    <link href="favicon.png" rel="apple-touch-icon">
-    <link href="favicon.png" rel="apple-touch-icon-precomposed">
-    <meta property="og:image" content="favicon.png">
-    <meta property="twitter:image:src" content="favicon.png">
-    <meta name="image" content="favicon.png">
-    <meta itemprop="image" content="favicon.png">
-    <meta name="og:image" content="favicon.png">
-    
-    <meta itemprop="name" content="Premier Fishtank.live game in stunning 3D.">
-    <meta name="description" content="Premier Fishtank.live game in stunning 3D.">
-    <meta name="og:description" content="Premier Fishtank.live game in stunning 3D.">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
 
-    <meta name="og:type" content="website">
-    <meta name="og:title" content="Fishtank Dungeons">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://FishtankDungeons.github.io/fatty.png">
+    <meta property="og:title" content="Fishtank Dungeons">
+    <meta property="og:description" content="The best Fishtank.live game ever made.">
+    <meta property="og:site_name" content="Fishtank Dungeons">
+    <meta property="og:url" content="https://FishtankDungeons.github.io">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fishtank Dungeons">
+    <meta name="twitter:description" content="The best Fishtank.live game ever made.">
+    <meta name="twitter:image" content="https://FishtankDungeons.github.io/fatty.png">
+
+    <meta itemprop="name" content="Fishtank Dungeons">
+    <meta itemprop="description" content="The best Fishtank.live game ever made.">
+    <meta itemprop="image" content="https://FishtankDungeons.github.io/fatty.png">
 
     <meta name="theme-color" content="#281C3C">
     <meta name="twitter:card" content="summary_large_image">
@@ -103,7 +107,7 @@
         <ul>
             <li><font color="#00FF00">Left Touch &amp; Drag</font>&nbsp;to Move Around.</li>
             <li><font color="#00FF00">Right Touch &amp; Drag</font>&nbsp;to Look Around.</li>
-            <li><font color="#00FF00">Left tap</font>&nbsp;bottom left of screen to shoot.</li>
+            <li><font color="#00FF00">Tap</font>&nbsp;bottom of screen to shoot.</li>
         </ul>
         <br>
         <h2>Credits</h2>
@@ -126,26 +130,56 @@
 			const requestPointerLock = element.requestPointerLock || element.webkitRequestPointerLock;
 			if('pointerLockElement' in document || 'webkitPointerLockElement' in document){if(requestPointerLock){requestPointerLock.call(element);}}
 		}
-        function pA(snd)
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const buffers = {};
+        const loading = {};
+
+        async function loadSound(url)
         {
-            var aud = new Audio(snd);
-            aud.preload = "auto";
+            if (buffers[url]) return;
+            if (loading[url]) return loading[url];
+            loading[url] = fetch(url)
+                .then(r => r.arrayBuffer())
+                .then(buf => audioCtx.decodeAudioData(buf))
+                .then(decoded => {
+                buffers[url] = decoded;
+                });
+            return loading[url];
         }
-        pA('shot.mp3');
-        pA('d1.mp3');
-        pA('d2.mp3');
-        pA('d3.mp3');
-        pA('d4.mp3');
-        pA('d5.mp3');
-        pA('d6.mp3');
-        pA('p1.mp3');
-        pA('p2.mp3');
-        pA('p3.mp3');
-        pA('p4.mp3');
-        pA('p5.mp3');
-        pA('p6.mp3');
-        pA('p7.mp3');
-        pA('p8.mp3');
+
+        async function playSound(url, volume = 1.0)
+        {
+            if (!buffers[url]) {await loadSound(url);}
+            const buffer = buffers[url];
+            if (!buffer) return;
+            const src = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            gain.gain.value = volume;
+            src.buffer = buffer;
+            src.connect(gain);
+            gain.connect(audioCtx.destination);
+            src.start(0);
+        }
+
+        function preloadSounds(urls){return Promise.all(urls.map(loadSound));}
+        preloadSounds([
+            "shot.mp3",
+            "d1.mp3",
+            "d2.mp3",
+            "d3.mp3",
+            "d4.mp3",
+            "d5.mp3",
+            "d6.mp3",
+            "p1.mp3",
+            "p2.mp3",
+            "p3.mp3",
+            "p4.mp3",
+            "p5.mp3",
+            "p6.mp3",
+            "p7.mp3",
+            "p8.mp3"
+        ]);
     </script>
     {{{ SCRIPT }}}
 </body>
